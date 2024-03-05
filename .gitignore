@@ -1,0 +1,5 @@
+/mqttsettings.h
+/settings.json
+certificate_helper/generated/*
+/build/*
+/.vscode/*

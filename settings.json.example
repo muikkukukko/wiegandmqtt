@@ -1,0 +1,13 @@
+{
+    "settings": {
+        "board": "pico_w",
+        "mqtt": {
+            "host": "HOSTNAME OR IP HERE",
+            "port": "8883"
+        },
+        "wifi": {
+            "ssid": "WIFI SSID HERE",
+            "password": "WIFI PASSWORD HERE"
+        }
+    }
+}
