@@ -3,3 +3,4 @@
 certificate_helper/generated/*
 /build/*
 /.vscode/*
+cp_to_pico.sh

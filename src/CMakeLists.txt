@@ -1,1 +1,1 @@
-target_sources(wiegandmqtt PRIVATE main.c wifi.c mqtt.c)
+target_sources(wiegandmqtt PRIVATE main.c wifi.c mqtt.c dma.c)

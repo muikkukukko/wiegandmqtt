@@ -92,11 +92,15 @@ add_subdirectory(src)
 pico_enable_stdio_usb(wiegandmqtt 1)
 pico_enable_stdio_uart(wiegandmqtt 0)
 
+# Generate PIO header
+pico_generate_pio_header(wiegandmqtt ${CMAKE_CURRENT_LIST_DIR}/src/wiegand.pio)
+
 target_compile_definitions(wiegandmqtt PRIVATE
 WIFI_SSID=\"${WIFI_SSID}\"
 WIFI_PASSWORD=\"${WIFI_PASSWORD}\"
 TEST_TCP_SERVER_IP=\"${TEST_TCP_SERVER_IP}\"
 NO_SYS=1
+CYW43_SPI_PIO_PREFERRED_PIO=1
 )
 
 target_include_directories(wiegandmqtt PRIVATE
@@ -111,6 +115,7 @@ target_link_libraries(wiegandmqtt
     pico_lwip_mbedtls
     pico_mbedtls
     pico_lwip_mqtt
+    hardware_pio
 ) 
 
 pico_add_extra_outputs(wiegandmqtt)

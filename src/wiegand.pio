@@ -1,0 +1,57 @@
+.program wiegand
+
+loop:                 
+    mov y, pins       ; Pin status to Y
+    set x, 3          ; Prepare X for comparison
+    jmp x != y bit    ; Handle bit if both not high
+    jmp loop          ; Retest pins
+
+bit: 
+    set x, 1          ; Prepare X for comparsion  
+    jmp x != y d0     ; Values on pins: d0 low=>2 d1 low=>1 
+d1:
+    in  x,1           ; 1 to isr
+    jmp delay
+d0:
+    in  null,1        ; 0 to isr     
+
+delay:
+    nop [31]          ; Small delay
+    nop [31]
+    
+wait_high:                
+    mov y, pins       ; Pin status to Y
+    set x, 3          ; Prepare for comparison
+    jmp x != y wait_high   ; Not yet high?
+    jmp loop          ; Start over   
+
+% c-sdk {
+#include "hardware/clocks.h"
+#include "dma.h"
+
+static inline void wiegand_program_init(PIO pio, uint sm, uint offset, uint pin) {
+    
+    const uint32_t reserved_pin_count=2;
+
+    for(uint32_t index=0;index<reserved_pin_count;index++)
+    {
+        pio_gpio_init(pio, pin+index);    
+        //gpio_pull_up(pin+index);
+    }
+
+    pio_sm_config c = wiegand_program_get_default_config(offset);
+
+    sm_config_set_in_pins(&c, pin);
+    sm_config_set_in_shift(&c,false,true,NUM_OF_BITS_IN_DMA);
+
+    const uint frequency = 400000;
+    float clock_divider = (float) clock_get_hz(clk_sys) / frequency;
+    sm_config_set_clkdiv(&c, clock_divider);
+	
+    pio_sm_set_consecutive_pindirs(pio, sm, pin, reserved_pin_count, false);
+
+    pio_sm_init(pio, sm, offset, &c);
+    
+    pio_sm_set_enabled(pio, sm, true);
+}
+%}

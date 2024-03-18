@@ -14,4 +14,6 @@ typedef struct MQTT_APP_STATE_T_ {
   u32_t reconnect;
 } MQTT_APP_STATE_T;
 
+typedef enum { NO_CODE, KEYPAD, CARD } code_types_t;
+
 #endif /* WIEGANDMQTT_COMMON */
